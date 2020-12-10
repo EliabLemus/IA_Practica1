@@ -1,0 +1,71 @@
+<!-- /templates/my-form.html-->
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Create two equal columns that floats next to each other */
+  .column {
+    float: left;
+    width: 50%;
+    padding: 10px;
+    height: 300px; /* Should be removed. Only for demonstration */
+  }
+
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  </style>
+</head>
+    <body>
+        <form action="/form-handler" method="POST">
+            <div class="row">
+                <div class="column" style="background-color:#aaa;">
+                    <div>
+                        <h1><label for="myfile">Seleccione un archivo:</label><br></h1>
+                        <input type="file" id="myfile" name="Cargar">
+                    </div>
+                    <div>
+                        Seleccione un criterio de finalizacion:<br> 
+                        <input type="checkbox" id="criterio1" name="criterio1" value="criterio1">
+                            <label for="criterio1"> Criterio 1</label><br>
+                            <input type="checkbox" id="criterio2" name="criterio2" value="criterio2">
+                            <label for="criterio2"> Criterio 2</label><br>
+                            <input type="checkbox" id="criterio3" name="criterio3" value="criterio3">
+                            <label for="criterio3"> Criterio 3</label><br><br>
+                    </div>
+                        <div>
+                            Seleccione un modo de seleccion de padres: <br>
+                            <input type="checkbox" id="modo1" name="modo1" value="modo1">
+                            <label for="modo1"> Modo 1</label><br>
+                            <input type="checkbox" id="modo2" name="modo2" value="modo2">
+                            <label for="modo2"> Modo 2</label><br>
+                            <input type="checkbox" id="modo3" name="modo3" value="modo3">
+                            <label for="modo3"> Modo 3</label><br><br>
+                        </div>
+                    <input type="submit" value="Generar modelo">
+                </div>
+                <div class="column" style="background-color:#bbb;">
+                        <h2>Predecir nota del estudiante:</h2>
+                            <label for="fname">Proyecto 1:</label>
+                            <input type="text" id="proyecto1" name="proyecto1"><br><br>
+                            <label for="proyecto2">Proyecto 2:</label>
+                            <input type="text" id="proyecto2" name="proyecto2"><br><br>
+                            <label for="proyecto3">Proyecto 3:</label>
+                            <input type="text" id="proyecto3" name="proyecto3"><br><br>
+                            <label for="proyecto4">Proyecto 4:</label>
+                            <input type="text" id="proyecto4" name="proyecto4   "><br><br>
+                <div>
+                <input type="submit" value="Calcular Nota">
+                </div>
+                </div>
+          </form>
+    </body>
+</html>

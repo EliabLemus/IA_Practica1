@@ -2,10 +2,19 @@
 
 # also importing the request module
 from flask import Flask, render_template, request
+UPLOAD_FOLDER='/Users/macbookpro/Documents/IA/Laboratorio/Practica1/flask_app'
+ALLOWED_EXTENSIONS= set(['csv'])
 
 app = Flask(__name__)
-# home route
-@app.route("/")
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+# # home route
+@app.route("/", methods=['GET', 'POST'])
+
 def hello():
     return render_template('index.html', name = 'Jane', gender = 'Female')
 
