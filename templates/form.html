@@ -23,14 +23,17 @@
     clear: both;
   }
   </style>
+  <script>
+    var file_content = {{ file_content }}
+  </script>
 </head>
     <body>
-        <form action="/form-handler" method="POST">
+        <form action="/my-form" method="POST" enctype="multipart/form-data">
             <div class="row">
                 <div class="column" style="background-color:#aaa;">
                     <div>
-                        <h1><label for="myfile">Seleccione un archivo:</label><br></h1>
-                        <input type="file" id="myfile" name="Cargar">
+                      <input type="file" name="archivo" id="fileToUpload" >
+                      <input type="submit" value="Upload File" name="Upload File">
                     </div>
                     <div>
                         Seleccione un criterio de finalizacion:<br> 
