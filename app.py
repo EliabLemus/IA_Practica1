@@ -2,8 +2,9 @@
 import csv
 import codecs 
 from io import StringIO
-import genetic_algoritm
-data = []
+from genetic_algoritm import Solution, Row, calculatedNote, fitnessValue, getPopulation, getSolutions, printObject
+data_rows = []
+individuos = []
 # also importing the request module
 from flask import Flask, render_template, request, jsonify
 
@@ -29,21 +30,24 @@ def form():
         # Numero de filas
         list_of_dicts = list(reader)
         row_count = len(list_of_dicts)
-        individuos = genetic_algoritm.getPopulation(4,1)
-        # individuos=[[0.45,0.2,0.34,0.15]]
-        # print(individuos)
-        for p in individuos:
-            # print(p)
-            for i in list_of_dicts:
-                # file_up += ', '.join(row)
-                data.append(genetic_algoritm.Node(solution=p,realNote=i.get('NOTA FINAL'), projectNotes=[float(i.get('PROYECTO 1')), float(i.get('PROYECTO 2')), float(i.get('PROYECTO 3')), float(i.get('PROYECTO 4'))]))    
-            realNoteArr = []
-            calcNoteArr = []
-            for d in data:
-                realNoteArr.append(float(d.realNote))
-                calcNoteArr.append(float(d.calculatedNote))
-            print('Numero de filas: {}'.format(row_count))
-            genetic_algoritm.fitnessValue(row_count=row_count,realNote=realNoteArr,calculatedNote=calcNoteArr)
+        ## End of csv read 
+        ## load rows into data_rows
+        for r in list_of_dicts:
+            data_rows.append(Row(cn=0,rn=float(r.get('NOTA FINAL')),project_notes=[float(r.get('PROYECTO 1')), float(r.get('PROYECTO 2')), float(r.get('PROYECTO 3')), float(r.get('PROYECTO 4'))]))
+            
+        #Number of solutions generated 
+        
+        individuos = getPopulation(4,50)
+        for s in individuos:
+            print('-_-_-_-_-_--_-- working on: {} -_-_-_-_-_--_--'.format(s.solution_proposed))
+            for d in data_rows:
+                d.cn=calculatedNote(s.solution_proposed,d.project_notes)
+            # for result in data_rows:
+            #     printObject(result)
+            s.fitnessValue=fitnessValue(row_count,data_rows=data_rows)    
+        
+        for n in individuos:
+            printObject(n)    
         return render_template('form.html')
     
     
