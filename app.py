@@ -2,7 +2,7 @@
 import csv
 import codecs 
 from io import StringIO
-from genetic_algoritm import Solution, Row, calculatedNote, fitnessValue, getPopulation, getSolutions, printObject
+from genetic_algoritm import execute
 data_rows = []
 individuos = []
 # also importing the request module
@@ -29,25 +29,7 @@ def form():
         file_up =''
         # Numero de filas
         list_of_dicts = list(reader)
-        row_count = len(list_of_dicts)
-        ## End of csv read 
-        ## load rows into data_rows
-        for r in list_of_dicts:
-            data_rows.append(Row(cn=0,rn=float(r.get('NOTA FINAL')),project_notes=[float(r.get('PROYECTO 1')), float(r.get('PROYECTO 2')), float(r.get('PROYECTO 3')), float(r.get('PROYECTO 4'))]))
-            
-        #Number of solutions generated 
-        
-        individuos = getPopulation(4,50)
-        for s in individuos:
-            print('-_-_-_-_-_--_-- working on: {} -_-_-_-_-_--_--'.format(s.solution_proposed))
-            for d in data_rows:
-                d.cn=calculatedNote(s.solution_proposed,d.project_notes)
-            # for result in data_rows:
-            #     printObject(result)
-            s.fitnessValue=fitnessValue(row_count,data_rows=data_rows)    
-        
-        for n in individuos:
-            printObject(n)    
+        execute(list_of_dicts)
         return render_template('form.html')
     
     
