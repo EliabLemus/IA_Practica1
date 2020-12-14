@@ -1,7 +1,9 @@
 import random, functools, operator, math
 data_rows=[]
 # individuals_population=[]
-max_generations = 500 
+max_generations = 100 
+global_population = 500
+best_solution = [0.16394592305796651, 0.1371219182443406, 0.289936743604601, 0.40379898519615676]
 
 class Solution:
     def __init__(self, solution_proposed = [], fitnessValue = 0):
@@ -18,6 +20,8 @@ class Row:
 def getSolutions(low, high, size):
     return [random.uniform(low, high) for _ in range(size)]
 
+def getBestSolution():
+    return best_solution
 # Return an array of arrays with random values 
 def getPopulation(numberOfSolutions, size):
     """
@@ -65,7 +69,7 @@ def fitnessValue(N=0,data_rows=[],solution=[]):
     return result
 
     
-def buildPopulation(file_rows=[],population=40):
+def buildPopulation(file_rows=[],population=global_population):
     """
     file_rows: Data from csv file
     population: number of initial population to work 
@@ -219,7 +223,7 @@ def mutate(solution):
     return solution    
 def execute(file_rows=[],population=20,options=[]):
     data_rows = file_rows
-    population = buildPopulation(file_rows=data_rows,population=100)
+    population = buildPopulation(file_rows=data_rows,population=global_population)
     generation = 0
     stop = check_criteria(generation,criteria_option=options['finalization_criteria_option'],population=population)
     while(stop != True):
@@ -232,8 +236,6 @@ def execute(file_rows=[],population=20,options=[]):
     population.sort(key=lambda x: x.fitnessValue, reverse=False)
     print('Menor valor fitness:',population[0].fitnessValue)
     printObject(population[0])
-    population.sort(key=lambda x: x.fitnessValue, reverse=True)
-    print('Mayor valor fitness:',population[0].fitnessValue)
     return {'model_selected': population[0].solution_proposed, 'fitness_value': population[0].fitnessValue}
 def test_function():
     parents=[]

@@ -33,7 +33,7 @@
                 <div class="column" style="background-color:#aaa;">
                     <div>
                       <input type="file" name="loadFile" id="fileToUpload" >
-                      <input type="submit" value="Upload File" name="Upload File">
+                      <input type="submit" value="Subir" name="Subir">
                     </div>
                     <div>
                         Seleccione un criterio de finalizacion:<br> 
@@ -47,22 +47,34 @@
                             <label><input type="radio" name="choose_parents" value="best_value" {%if parents_choose['best_value'] == True %}checked= True {% endif %}>Mejor valor</label><br>
                             <label><input type="radio" name="choose_parents" value="random" {%if parents_choose['random'] == True %}checked= True {% endif %}>Seleccion aleatoria</label><br><br>
                         </div>
-                    <input type="submit" name="Generar modelo" value="Generar modelo">
+                    <input type="submit" name="Modelo" value="Modelo">
                 </div>
                 <div class="column" style="background-color:#bbb;">
                         <h2>Predecir nota del estudiante:</h2>
                             <label for="fname">Proyecto 1:</label>
-                            <input type="text" id="proyecto1" name="proyecto1"><br><br>
+                            <input type="text" id="proyecto1" name="proyecto1" {%if results['proyecto1']%} value="{{results['proyecto1']}}" {% endif %}><br><br>
                             <label for="proyecto2">Proyecto 2:</label>
-                            <input type="text" id="proyecto2" name="proyecto2"><br><br>
+                            <input type="text" id="proyecto2" name="proyecto2" {%if results['proyecto2']%} value="{{results['proyecto2']}}" {% endif %}><br><br>
                             <label for="proyecto3">Proyecto 3:</label>
-                            <input type="text" id="proyecto3" name="proyecto3"><br><br>
+                            <input type="text" id="proyecto3" name="proyecto3" {%if results['proyecto3']%} value="{{results['proyecto3']}}" {% endif %}><br><br>
                             <label for="proyecto4">Proyecto 4:</label>
-                            <input type="text" id="proyecto4" name="proyecto4"><br><br>
+                            <input type="text" id="proyecto4" name="proyecto4" {%if results['proyecto4']%} value="{{results['proyecto4']}}" {% endif %}><br><br>
                 <div>
                 <input type="submit" name="Nota" value="Nota">
                 </div>
                 </div>
           </form>
+          {%if results['model_selected'] %}
+          <input type = "hidden" id="hmodel_selected" name="hmodel_selected" value="{{results['model_selected']}}">
+          Mejor Modelo: {{results['model_selected']}} <br><br>
+          {%endif%}
+          {%if results['fitness_value'] %}
+          <input type = "hidden" id="hfitnes_value" name="hfitness_value" value={{results['fitness_value']}}>
+          Valor Fitness: {{results['fitness_value']}}<br><br>
+          {%endif%}
+          {%if results['calculated_note'] %}
+          <input type = "hidden" id="hcalculated_note" name="hcalculated_note">
+          Nota calculada: {{results['calculated_note']}}<br><br>
+          {%endif%}
     </body>
 </html>
