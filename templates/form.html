@@ -24,7 +24,7 @@
   }
   </style>
   <script>
-    var file_content = {{ file_content }}
+
   </script>
 </head>
     <body>
@@ -37,23 +37,17 @@
                     </div>
                     <div>
                         Seleccione un criterio de finalizacion:<br> 
-                        <input type="checkbox" id="criterio1" name="criterio1" value="criterio1">
-                            <label for="criterio1"> Criterio 1</label><br>
-                            <input type="checkbox" id="criterio2" name="criterio2" value="criterio2">
-                            <label for="criterio2"> Criterio 2</label><br>
-                            <input type="checkbox" id="criterio3" name="criterio3" value="criterio3">
-                            <label for="criterio3"> Criterio 3</label><br><br>
+                        <label><input type="radio" id="max_generation" name="finalization_criteria" value="max_generation" {%if finalization_criteria['max_generation'] == True %}checked= True {% endif %}>Maxima generacion</label><br>
+                        <label><input type="radio" id="best_value" name="finalization_criteria" value="best_value" {%if finalization_criteria['best_value'] == True %}checked= True {% endif %}>Mejor valor fitness</label><br>
+                        <label><input type="radio" id="criteria_3" name="finalization_criteria" value="criteria_3" {%if finalization_criteria['criteria_3'] == True %}checked= True {% endif %}>Criterio 3</label><br><br>
                     </div>
                         <div>
                             Seleccione un modo de seleccion de padres: <br>
-                            <input type="checkbox" id="modo1" name="modo1" value="modo1">
-                            <label for="modo1"> Modo 1</label><br>
-                            <input type="checkbox" id="modo2" name="modo2" value="modo2">
-                            <label for="modo2"> Modo 2</label><br>
-                            <input type="checkbox" id="modo3" name="modo3" value="modo3">
-                            <label for="modo3"> Modo 3</label><br><br>
+                            <label><input type="radio" name="choose_parents" value="tournament" {%if parents_choose['tournament'] == True %}checked= True {% endif %}>Torneo</label><br>
+                            <label><input type="radio" name="choose_parents" value="best_value" {%if parents_choose['best_value'] == True %}checked= True {% endif %}>Mejor valor</label><br>
+                            <label><input type="radio" name="choose_parents" value="random" {%if parents_choose['random'] == True %}checked= True {% endif %}>Seleccion aleatoria</label><br><br>
                         </div>
-                    <input type="submit" value="Generar modelo">
+                    <input type="submit" name="Generar modelo" value="Generar modelo">
                 </div>
                 <div class="column" style="background-color:#bbb;">
                         <h2>Predecir nota del estudiante:</h2>
@@ -64,9 +58,9 @@
                             <label for="proyecto3">Proyecto 3:</label>
                             <input type="text" id="proyecto3" name="proyecto3"><br><br>
                             <label for="proyecto4">Proyecto 4:</label>
-                            <input type="text" id="proyecto4" name="proyecto4   "><br><br>
+                            <input type="text" id="proyecto4" name="proyecto4"><br><br>
                 <div>
-                <input type="submit" value="Calcular Nota">
+                <input type="submit" name="Nota" value="Nota">
                 </div>
                 </div>
           </form>

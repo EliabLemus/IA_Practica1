@@ -65,7 +65,7 @@ def fitnessValue(N=0,data_rows=[],solution=[]):
     return result
 
     
-def buildPopulation(file_rows=[],population=20):
+def buildPopulation(file_rows=[],population=40):
     """
     file_rows: Data from csv file
     population: number of initial population to work 
@@ -80,36 +80,84 @@ def buildPopulation(file_rows=[],population=20):
     for s in individuals_population:
         s.fitnessValue=fitnessValue(row_count,data_rows=data_rows,solution=s.solution_proposed)    
     return individuals_population
-def check_criteria(generation,criteria=0):
+def check_criteria(generation,criteria_option,population=[]):
     """
         population: individuals with solution propossals 
         generation: number of generation working 
         criteria: Type of criteria to evaluate
     """
+    criteria = 0 
+    if criteria_option == 'max_generation':
+        criteria = 0
+    elif criteria_option == 'best_value':
+        criteria = 1
+    elif criteria_option == 'criteria_3':
+        criteria = 2
+    else:
+        criteria = 0
+        
     print('generation: ', generation, max_generations)
     if criteria == 0:
         return generation > max_generations
-    else:
-        return False
+    elif criteria == 1: # un miembro de la poblacion alcance un valor fitnes. 
+        for i in population:
+            if i.fitnessValue <= 10:
+                return True
+            else:
+                return False
+    elif criteria == 3:
+        NotImplementedError 
+    return False
     
-def chooseFathers(population):
+def chooseFathers(population, choose_father_options):
     """
     will be selected the best of two
     """
+    tipo = 0 
+    if choose_father_options == 'tournament':
+        tipo = 0 
+    elif choose_father_options == 'best_value':
+        tipo = 1
+    elif choose_father_options == 'random':
+        tipo = 2
+    else:
+        tipo = 0 
     #TODO: Mejorar la seleccion 
     # ut.sort(key=lambda x: x.count, reverse=True)
-    population.sort(key=lambda x: x.fitnessValue, reverse=False)
+    #results=[a.fitnessvalue for a in population if a.fitnessValue < 10]
+    results=[a.fitnessValue for a in population]
+    avg=sum(results)/len(results)
+    print('Promedio:',avg) 
     parents =[]
-    limit=int(len(population)/2)
-    print('limit:', limit)
-    for i in range(0,limit):
-        parentA = population[i]
-        parentB = population[i+1]
-        parents.append(parentB if parentB.fitnessValue < parentA.fitnessValue else parentA)
-        i+=2
-    return parents
     
-    return parents
+    if tipo == 0: #tournament
+        # population.sort(key=lambda x: x.fitnessValue, reverse=False)
+        # Seleccion por torneo 
+        print('seleccion por torneo')
+        population.sort(key=lambda x: x.fitnessValue, reverse=False)
+        limit=int(len(population)/2)
+        for i in range(0,limit):
+            parentA = population[i]
+            parentB = population[i+1]
+            parents.append(parentB if parentB.fitnessValue < parentA.fitnessValue else parentA)
+            i+=2
+        return parents
+    elif tipo == 1: #Best value 
+        print('seleccion por mejor valor')
+        #padres con el mejor valor fitness
+        #TODO: definir que seleccione padres con los mejores valores fitness
+        population.sort(key=lambda x: x.fitnessValue, reverse=False)
+        limit=int(len(population)/2)
+        for i in range(0,limit):
+            parentA = population[limit-i]
+            parentB = population[i]
+            parents.append(parentA if parentA.fitnessValue < parentB.fitnessValue else parentB)
+        return parents
+    elif tipo ==3: 
+        print('Random')
+        NotImplementedError
+    
+
 def match(parents):
     """
     Emparejar
@@ -169,26 +217,24 @@ def mutate(solution):
                 solution[i] = random.uniform(-2,2)
             break
     return solution    
-def execute(file_rows=[],population=20):
+def execute(file_rows=[],population=20,options=[]):
     data_rows = file_rows
-    population = buildPopulation(file_rows=data_rows)
+    population = buildPopulation(file_rows=data_rows,population=100)
     generation = 0
-    stop = check_criteria(generation,0)
-    print('stop:',stop)
-    print('Generacion:', generation)
+    stop = check_criteria(generation,criteria_option=options['finalization_criteria_option'],population=population)
     while(stop != True):
-        print('inside while')
-        print('Generacion:', generation)
         #seleccionar padres
-        parents = chooseFathers(population=population)
+        parents = chooseFathers(population=population,choose_father_options=options['parents_option'])
         population = match(parents) 
         generation += 1
-        stop = check_criteria(generation,0)
+        stop = check_criteria(generation,criteria_option=options['finalization_criteria_option'],population=population)
         print('Generacion:', generation)
-        print('stop', stop)
-        for p in population:
-            printObject(p)
-        
+    population.sort(key=lambda x: x.fitnessValue, reverse=False)
+    print('Menor valor fitness:',population[0].fitnessValue)
+    printObject(population[0])
+    population.sort(key=lambda x: x.fitnessValue, reverse=True)
+    print('Mayor valor fitness:',population[0].fitnessValue)
+    return {'model_selected': population[0].solution_proposed, 'fitness_value': population[0].fitnessValue}
 def test_function():
     parents=[]
     parents.append(Solution([0.23077760369354827, -1.1911969230003634, 0.23802431752247877, -0.7998844934669207],fitnessValue=25231.223238253446))   
