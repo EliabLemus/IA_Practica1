@@ -32,14 +32,14 @@
             <div class="row">
                 <div class="column" style="background-color:#aaa;">
                     <div>
-                      <input type="file" name="loadFile" id="fileToUpload" >
+                      <input type="file" name="loadFile" id="fileToUpload" {%if results['file_upload_name'] %}value="{{results['file_upload_name']}}"" {% endif %}>
                       <input type="submit" value="Subir" name="Subir">
                     </div>
                     <div>
                         Seleccione un criterio de finalizacion:<br> 
                         <label><input type="radio" id="max_generation" name="finalization_criteria" value="max_generation" {%if finalization_criteria['max_generation'] == True %}checked= True {% endif %}>Maxima generacion</label><br>
                         <label><input type="radio" id="best_value" name="finalization_criteria" value="best_value" {%if finalization_criteria['best_value'] == True %}checked= True {% endif %}>Mejor valor fitness</label><br>
-                        <label><input type="radio" id="criteria_3" name="finalization_criteria" value="criteria_3" {%if finalization_criteria['criteria_3'] == True %}checked= True {% endif %}>Promedio fitness menor o igual 5</label><br><br>
+                        <label><input type="radio" id="fitness_average" name="finalization_criteria" value="fitness_average" {%if finalization_criteria['fitness_average'] == True %}checked= True {% endif %}>Promedio fitness menor o igual 5</label><br><br>
                     </div>
                         <div>
                             Seleccione un modo de seleccion de padres: <br>

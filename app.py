@@ -6,7 +6,7 @@ from genetic_algoritm import calculatedNote, execute, printObject,getBestSolutio
 
 data_rows = []
 individuos = []
-finalization_criteria = {'max_generation': False,'best_value': False,'criteria_3': False}
+finalization_criteria = {'max_generation': False,'best_value': False,'fitness_average': False}
 parents_choose = {'tournament': False,'best_value': False,'pairs': False}
 results = {}
 save_solution=[]
@@ -40,7 +40,6 @@ def form():
        
     if request.method == 'POST':
         if request.form.get('Modelo') == 'Modelo' or request.form.get('Subir') == 'Subir':
-            print('generate+model')
             if request.files['loadFile'].filename == '':
                 print('no file')
                 return render_template('form.html',file_content = 'hola',finalization_criteria=finalization_criteria,parents_choose=parents_choose,results=results)
@@ -53,22 +52,16 @@ def form():
             
             finalization_criteria[finalization_criteria_value] = True
             # print('father choose:', father_choose)
-            
+            fileName = request.files['loadFile'].filename
             f = request.files['loadFile']
-            print('f:',f)    
             fstring = StringIO(f.read().decode())
             reader = csv.DictReader(fstring, delimiter=',')
             file_up =''
             # Numero de filas
             list_of_dicts = list(reader)
-            print('parents_choose_value',parents_choose_value)
-            print('finalization_criteria_value',finalization_criteria_value)
-            
-            options = {'parents_option': parents_choose_value, 'finalization_criteria_option': finalization_criteria_value}
+            options = {'parents_option': parents_choose_value, 'finalization_criteria_option': finalization_criteria_value, 'file_upload_name': fileName}
             results = {}
             results = execute(list_of_dicts,options=options)
-            
-
             return render_template('form.html', finalization_criteria=finalization_criteria,parents_choose=parents_choose, results=results)
 
         elif request.form.get('Nota') == 'Nota':
@@ -80,8 +73,6 @@ def form():
             p4=request.form.get('proyecto4')
             model=request.form.get('hmodel_selected')
             fitness=request.form.get('hfitness_value')
-            
-                
             if model == None:
                 model=getBestSolution()
             else:

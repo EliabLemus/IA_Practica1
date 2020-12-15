@@ -1,3 +1,4 @@
+from enum import Enum
 import random, functools, operator, math, datetime
 data_rows=[]
 # individuals_population=[]
@@ -84,63 +85,93 @@ def buildPopulation(file_rows=[],population=global_population):
     for s in individuals_population:
         s.fitnessValue=fitnessValue(row_count,data_rows=data_rows,solution=s.solution_proposed)    
     return individuals_population
+class Criteria(Enum):
+    MAXIMA_GENERACION = 0
+    MEJOR_VALOR = 1 
+    FITNES_PROMEDIO = 2
+def getCriteriaName(criteria):
+    if criteria == 'max_generation':
+        return 'Maxima generacion'
+    elif criteria == 'best_value':
+        return 'Mejor valor'
+    elif criteria == 'fitness_average':
+        return 'fitness promedio'
+    else:
+        criteria = Criteria.MAXIMA_GENERACION
 def check_criteria(generation,criteria_option,population=[]):
     """
         population: individuals with solution propossals 
         generation: number of generation working 
         criteria: Type of criteria to evaluate
     """
-    criteria = 0 
+    criteria = Criteria.MAXIMA_GENERACION 
     if criteria_option == 'max_generation':
-        criteria = 0
+        criteria = Criteria.MAXIMA_GENERACION
     elif criteria_option == 'best_value':
-        criteria = 1
-    elif criteria_option == 'criteria_3':
-        criteria = 2
+        criteria = Criteria.MEJOR_VALOR
+    elif criteria_option == 'fitness_average':
+        criteria = Criteria.FITNES_PROMEDIO
     else:
-        criteria = 0
+        criteria = Criteria.MAXIMA_GENERACION
         
-    log('Generacion: ', generation,'/', max_generations)
-    if criteria == 0:
+    print(criteria.name)
+    if criteria == Criteria.MAXIMA_GENERACION:
+        print('Generacion: ', generation,'/', max_generations)
         #Maxima generacion
-        return generation > max_generations
-    elif criteria == 1: 
-        # un miembro de la poblacion alcance un valor fitnes. 
+        return generation >= max_generations
+    elif criteria == Criteria.MEJOR_VALOR: 
+        # un miembro de la poblacion alcance un valor fitnes.
+        print('Generacion: ', generation) 
+        print('minimo: ', population[0].fitnessValue)
         for i in population:
-            if i.fitnessValue <= 2:
+            if i.fitnessValue <= 2.5:
                 return True
             else:
                 return False
-    elif criteria == 3:
+    elif criteria == Criteria.FITNES_PROMEDIO:
+        print('Generacion: ', generation) 
         average = fitnessAverage(population)
-        return average <=5
+        n=len(population)
+        return average/n <=0.8
+    
     return False
 def fitnessAverage(population):
     results=[a.fitnessValue for a in population]
-    return float(sum(results)/len(results)) 
-        
+    to_divide = sum(results)
+    return float(to_divide/len(population)) 
+class Parents(Enum):
+    TOURNAMENT=0
+    BEST_VALUE=1
+    PAIRS=2
+def getChooseFathersName(choose_father_option):
+    if choose_father_option == 'tournament':
+        return 'Torneo'
+    elif choose_father_option == 'best_value':
+        return 'Mejor valor'
+    elif choose_father_option == 'pairs':
+        return 'Pares'
+    
 def chooseFathers(population, choose_father_options):
     """
     will be selected the best of two
     """
-    tipo = 0 
-    if choose_father_options == 'tournament':
-        tipo = 0 
-    elif choose_father_options == 'best_value':
-        tipo = 1
-    elif choose_father_options == 'pairs':
-        tipo = 2
-    else:
-        tipo = 0 
     
-    log('Promedio valor fitness:', fitnessAverage(population))
+    if choose_father_options == 'tournament':
+        tipo = Parents.TOURNAMENT
+    elif choose_father_options == 'best_value':
+        tipo = Parents.BEST_VALUE
+    elif choose_father_options == 'pairs':
+        tipo = Parents.PAIRS
+    else:
+        tipo = Parents.TOURNAMENT 
+    
+    print('Promedio valor fitness:', fitnessAverage(population))
     parents =[]
-    population.sort(key=lambda x: x.fitnessValue, reverse=False)
-    if tipo == 0: #tournament
-        # population.sort(key=lambda x: x.fitnessValue, reverse=False)
+    # population.sort(key=lambda x: x.fitnessValue, reverse=False)
+    print(tipo.name)
+    if tipo == Parents.TOURNAMENT: #tournament
         # Seleccion por torneo 
-        log('seleccion de padres por torneo')
-        population.sort(key=lambda x: x.fitnessValue, reverse=False)
+        # population.sort(key=lambda x: x.fitnessValue, reverse=False)
         limit=int(len(population)/2)
         for i in range(0,limit):
             parentA = population[i]
@@ -148,8 +179,7 @@ def chooseFathers(population, choose_father_options):
             parents.append(parentB if parentB.fitnessValue < parentA.fitnessValue else parentA)
             i+=2
         return parents
-    elif tipo == 1: #Best value 
-        log('Seleccion de padres por mejor valor')
+    elif tipo == Parents.BEST_VALUE: #Best value 
         #padres con el mejor valor fitness
         population.sort(key=lambda x: x.fitnessValue, reverse=False)
         limit=int(len(population)/2)
@@ -157,8 +187,7 @@ def chooseFathers(population, choose_father_options):
             parentA = population[i]
             parents.append(parentA)
         return parents
-    elif tipo == 2: 
-        log('Seleccion de padres por pares')
+    elif tipo == Parents.PAIRS: 
         for j in range(0,len(population)):
             if j%2 == 0:
                 parentB = population[j]
@@ -226,7 +255,7 @@ def mutate(solution):
             break
     return solution    
 def execute(file_rows=[],population=20,options=[]):
-    log('Inicio ejecucion - Opciones elegidas:', options)
+    log('Inicio ejecucion \n','                      - Archivo:',options['file_upload_name'], '\n                      - Seleccion de padres: ',getChooseFathersName(options['parents_option']),'\n                      - Criterio: ',getCriteriaName(options['finalization_criteria_option']))
     data_rows = file_rows
     population = buildPopulation(file_rows=data_rows,population=global_population)
     generation = 0
@@ -237,10 +266,11 @@ def execute(file_rows=[],population=20,options=[]):
         population = match(parents) 
         generation += 1
         stop = check_criteria(generation,criteria_option=options['finalization_criteria_option'],population=population)
-        log('Generacion:', generation)
     population.sort(key=lambda x: x.fitnessValue, reverse=False)
-    log('Valor fitness:',population[0].fitnessValue,' - Modelo:',population[0].solution_proposed)
-    return {'model_selected': population[0].solution_proposed, 'fitness_value': population[0].fitnessValue}
+    log('Generaciones: ', generation)
+    log('Mejor modelo: ',population[0].solution_proposed)
+    log('Valor fitness: ',population[0].fitnessValue)
+    return {'model_selected': population[0].solution_proposed, 'fitness_value': population[0].fitnessValue, 'file_upload_name': options['file_upload_name']}
 def log(*args):
     now = datetime.datetime.now()
     line = '[' + now.strftime('%Y-%m-%d %H:%M:%S') + '] '
