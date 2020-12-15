@@ -39,13 +39,13 @@
                         Seleccione un criterio de finalizacion:<br> 
                         <label><input type="radio" id="max_generation" name="finalization_criteria" value="max_generation" {%if finalization_criteria['max_generation'] == True %}checked= True {% endif %}>Maxima generacion</label><br>
                         <label><input type="radio" id="best_value" name="finalization_criteria" value="best_value" {%if finalization_criteria['best_value'] == True %}checked= True {% endif %}>Mejor valor fitness</label><br>
-                        <label><input type="radio" id="criteria_3" name="finalization_criteria" value="criteria_3" {%if finalization_criteria['criteria_3'] == True %}checked= True {% endif %}>Criterio 3</label><br><br>
+                        <label><input type="radio" id="criteria_3" name="finalization_criteria" value="criteria_3" {%if finalization_criteria['criteria_3'] == True %}checked= True {% endif %}>Promedio fitness menor o igual 5</label><br><br>
                     </div>
                         <div>
                             Seleccione un modo de seleccion de padres: <br>
                             <label><input type="radio" name="choose_parents" value="tournament" {%if parents_choose['tournament'] == True %}checked= True {% endif %}>Torneo</label><br>
                             <label><input type="radio" name="choose_parents" value="best_value" {%if parents_choose['best_value'] == True %}checked= True {% endif %}>Mejor valor</label><br>
-                            <label><input type="radio" name="choose_parents" value="random" {%if parents_choose['random'] == True %}checked= True {% endif %}>Seleccion aleatoria</label><br><br>
+                            <label><input type="radio" name="choose_parents" value="pairs" {%if parents_choose['pairs'] == True %}checked= True {% endif %}>Poblacion par</label><br><br>
                         </div>
                     <input type="submit" name="Modelo" value="Modelo">
                 </div>

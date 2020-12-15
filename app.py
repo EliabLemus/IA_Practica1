@@ -2,12 +2,12 @@
 import csv
 import codecs 
 from io import StringIO
-from genetic_algoritm import calculatedNote, execute, printObject,getBestSolution
+from genetic_algoritm import calculatedNote, execute, printObject,getBestSolution,log
 
 data_rows = []
 individuos = []
 finalization_criteria = {'max_generation': False,'best_value': False,'criteria_3': False}
-parents_choose = {'tournament': False,'best_value': False,'random': False}
+parents_choose = {'tournament': False,'best_value': False,'pairs': False}
 results = {}
 save_solution=[]
 # also importing the request module
@@ -93,6 +93,8 @@ def form():
             result_score = calculatedNote(model,[float(p1),float(p2),float(p3),float(p4)])
             results = {'calculated_note': result_score,'fitness_value': fitness, 'model_selected': model,
                        'proyecto1': p1, 'proyecto2': p2, 'proyecto3': p3, 'proyecto4': p4}
+            
+            log('Nota Calculada: ', results)
             return render_template('form.html', fileName = ' ',file_content = 'hola',finalization_criteria=finalization_criteria,parents_choose=parents_choose,results=results)
         else:
             print(request.form)
